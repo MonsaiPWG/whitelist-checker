@@ -34,5 +34,7 @@ if wallet_address:
 
 # Footer
 st.markdown("---")
-st.markdown("🔒 This tool only checks wallet addresses. Editing the whitelist 
+st.markdown("🔒 This tool only checks wallet addresses. Editing the whitelist is not allowed.")
+
+
 
