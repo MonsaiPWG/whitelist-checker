@@ -1,44 +1,38 @@
 import streamlit as st
 import pandas as pd
 
-# Function to load the whitelist from the Excel file
-@st.cache_data
-def load_whitelist():
-    uploaded_file = st.file_uploader("Upload Whitelist File (WL.xlsx)", type=["xlsx"])
-
-if uploaded_file is not None:
-    df = pd.read_excel(uploaded_file, sheet_name="Sheet1", usecols=[2], skiprows=1)
-    df.columns = ["Wallet Address"]
-    whitelist = set(df["Wallet Address"].dropna())
-else:
-    st.warning("⚠ Please upload WL.xlsx to check addresses.")
-    whitelist = set()  # Ensure this file is in the same directory
-    df = pd.read_excel(file_path, sheet_name="Sheet1", usecols=[2], skiprows=1)
-    df.columns = ["Wallet Address"]
-    return set(df["Wallet Address"].dropna())  # Convert to a set for fast lookup
-
-# Load the whitelist
-whitelist = load_whitelist()
+# Function to load the whitelist from an uploaded file
+def load_whitelist(uploaded_file):
+    if uploaded_file is not None:
+        df = pd.read_excel(uploaded_file, sheet_name="Sheet1", usecols=[2], skiprows=1)
+        df.columns = ["Wallet Address"]
+        return set(df["Wallet Address"].dropna())  # Convert to a set for fast lookup
+    else:
+        return set()  # Return an empty set if no file is uploaded
 
 # Streamlit UI
 st.title("🔍 Whitelist Checker")
-st.write("Enter your wallet address below to check if you're whitelisted.")
+st.write("Upload your whitelist file and enter your wallet address to check if you're whitelisted.")
+
+# File uploader for whitelist
+uploaded_file = st.file_uploader("Upload Whitelist File (WL.xlsx)", type=["xlsx"])
+
+# Load whitelist dynamically
+whitelist = load_whitelist(uploaded_file)
 
 # User input field
 wallet_address = st.text_input("🔑 Wallet Address", "")
 
 # Check whitelist status
 if wallet_address:
-    if wallet_address in whitelist:
+    if whitelist and wallet_address in whitelist:
         st.success("✅ Your wallet is **whitelisted**! 🎉")
-    else:
+    elif whitelist:
         st.error("❌ Your wallet is **not whitelisted**.")
+    else:
+        st.warning("⚠ Upload WL.xlsx first to check addresses.")
 
 # Footer
 st.markdown("---")
-st.markdown("🔒 This tool only checks wallet addresses. Editing the whitelist is not allowed.")
+st.markdown("🔒 This tool only checks wallet addresses. Editing the whitelist 
 
-# Refresh button (optional)
-if st.button("🔄 Refresh Whitelist"):
-    whitelist = load_whitelist()
-    st.success("Whitelist reloaded successfully!")
