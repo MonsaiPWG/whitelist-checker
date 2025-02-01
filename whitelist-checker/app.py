@@ -16,7 +16,7 @@ def load_whitelist():
         return set()  # Return an empty set if no file exists
 
 # Streamlit UI
-st.title("🔍 Whitelist Checker")
+st.title("🔍 PRIMOS Whitelist Checker")
 
 # File uploader (only if WL.xlsx is missing)
 if not os.path.exists("WL.xlsx"):
@@ -42,4 +42,4 @@ if wallet_address:
 
 # Footer
 st.markdown("---")
-st.markdown("🔒 This tool only checks wallet addresses. Editing the whitelist is not allowed.")
+st.markdown("🔒 This tool only checks wallet addresses.")
