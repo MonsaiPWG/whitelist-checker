@@ -4,7 +4,15 @@ import pandas as pd
 # Function to load the whitelist from the Excel file
 @st.cache_data
 def load_whitelist():
-    file_path = "WL.xlsx"  # Ensure this file is in the same directory
+    uploaded_file = st.file_uploader("Upload Whitelist File (WL.xlsx)", type=["xlsx"])
+
+if uploaded_file is not None:
+    df = pd.read_excel(uploaded_file, sheet_name="Sheet1", usecols=[2], skiprows=1)
+    df.columns = ["Wallet Address"]
+    whitelist = set(df["Wallet Address"].dropna())
+else:
+    st.warning("⚠ Please upload WL.xlsx to check addresses.")
+    whitelist = set()  # Ensure this file is in the same directory
     df = pd.read_excel(file_path, sheet_name="Sheet1", usecols=[2], skiprows=1)
     df.columns = ["Wallet Address"]
     return set(df["Wallet Address"].dropna())  # Convert to a set for fast lookup
